@@ -17,14 +17,6 @@ class SortByFieldExtension extends \Twig_Extension
 {
 
 
-    /** @var String */
-    private $environment;
-
-    public function __construct($environment)
-    {
-        $this->environment = $environment;
-    }
-
     public function getName()
     {
         return 'sortbyfield';
@@ -56,10 +48,7 @@ class SortByFieldExtension extends \Twig_Extension
         } elseif ( $sort_by === null ) {
             throw new Exception('No sort by parameter passed to the sortByField filter');
         } elseif ( ! self::isSortable(current($content), $sort_by) ) {
-            if($this->environment === 'test'){
-                return $content;
-            }
-            throw new Exception('Entries passed to the sortByField filter do not have the field "' . $sort_by . '"');
+            return $content;
         } else {
             // Unfortunately have to suppress warnings here due to __get function
             // causing usort to think that the array has been modified:
