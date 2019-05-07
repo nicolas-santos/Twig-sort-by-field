@@ -12,7 +12,11 @@
         {
             "name": "Victor Häggqvist",
             "email": "victor@snilius.com"
-        }
+        },
+        {
+            "name": "Nicolas Santos",
+            "email": "nicolas@full.tech"
+        }        
     ],
     "autoload": {
         "psr-4": {
