@@ -3,10 +3,12 @@ A Twig Extension filter to sort an array of entries (objects or arrays) by an en
 
 Since version 0.1.5 Doctrine collections can be sorted as is with no need to manually extract the array first.
 
+_Fork from victorhaggqvist_ 
+
 ## Install
 With composer
 
-    composer require snilius/twig-sort-by-field
+    composer require nsantos/twig-sort-by-field
 
 ## Usage
 The list could look like this, but obviously with more than one key per array.
@@ -48,7 +50,7 @@ services:
 ```
 
 ## Disable exception on isSortable
-If isSortable failed - do not throw an exception
+If for some reason - isSortable fails - do not throw an exception
 
 ## License
 
