@@ -47,20 +47,8 @@ services:
             - { name: twig.extension }
 ```
 
-## Disable sortbyfield during tests
-For some reason, sortbyfield does not find the property of the entity using `property_exists()` with my fixtures (only during testing). Did not find a fix… i simply disable during tests…
- 
-```yml
-# app/config/services.yml
-services:
-    twig.extension.sortbyfield:
-        arguments: ['%kernel.environment%']
-        class: Snilius\Twig\SortByFieldExtension
-        tags:
-            - { name: twig.extension, '' }
-```
-
-
+## Disable exception on isSortable
+If isSortable failed - do not throw an exception
 
 ## License
 
