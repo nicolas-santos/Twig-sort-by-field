@@ -47,10 +47,6 @@ class SortByFieldExtension extends \Twig_Extension
         } elseif ( $sort_by === null ) {
             throw new Exception('No sort by parameter passed to the sortByField filter');
         } elseif ( ! self::isSortable(current($content), $sort_by) ) {
-            dump(gettype(current($content)));
-            dump($sort_by);
-            dd(current($content)->getStartAt());
-            dd(current($content));
             throw new Exception('Entries passed to the sortByField filter do not have the field "' . $sort_by . '"');
         } else {
             // Unfortunately have to suppress warnings here due to __get function
