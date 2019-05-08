@@ -16,7 +16,6 @@ use Exception;
 class SortByFieldExtension extends \Twig_Extension
 {
 
-
     public function getName()
     {
         return 'sortbyfield';
@@ -48,7 +47,11 @@ class SortByFieldExtension extends \Twig_Extension
         } elseif ( $sort_by === null ) {
             throw new Exception('No sort by parameter passed to the sortByField filter');
         } elseif ( ! self::isSortable(current($content), $sort_by) ) {
-            return $content;
+            dump(gettype(current($content)));
+            dump($sort_by);
+            dd(current($content)->getStartAt());
+            dd(current($content));
+            throw new Exception('Entries passed to the sortByField filter do not have the field "' . $sort_by . '"');
         } else {
             // Unfortunately have to suppress warnings here due to __get function
             // causing usort to think that the array has been modified:
@@ -58,34 +61,26 @@ class SortByFieldExtension extends \Twig_Extension
                 function ($a, $b) use ($sort_by, $direction) {
                     $flip = ($direction === 'desc') ? -1 : 1;
 
-                    if ( is_array($a) ) {
+                    if ( is_array($a) )
                         $a_sort_value = $a[$sort_by];
-                    } else {
-                        if ( method_exists($a, 'get' . ucfirst($sort_by)) ) {
-                            $a_sort_value = $a->{'get' . ucfirst($sort_by)}();
-                        } else {
-                            $a_sort_value = $a->$sort_by;
-                        }
-                    }
+                    else if ( method_exists($a, 'get' . ucfirst($sort_by)) )
+                        $a_sort_value = $a->{'get' . ucfirst($sort_by)}();
+                    else
+                        $a_sort_value = $a->$sort_by;
 
-                    if ( is_array($b) ) {
+                    if ( is_array($b) )
                         $b_sort_value = $b[$sort_by];
-                    } else {
-                        if ( method_exists($b, 'get' . ucfirst($sort_by)) ) {
-                            $b_sort_value = $b->{'get' . ucfirst($sort_by)}();
-                        } else {
-                            $b_sort_value = $b->$sort_by;
-                        }
-                    }
+                    else if ( method_exists($b, 'get' . ucfirst($sort_by)) )
+                        $b_sort_value = $b->{'get' . ucfirst($sort_by)}();
+                    else
+                        $b_sort_value = $b->$sort_by;
 
                     if ( $a_sort_value == $b_sort_value ) {
                         return 0;
+                    } else if ( $a_sort_value > $b_sort_value ) {
+                        return (1 * $flip);
                     } else {
-                        if ( $a_sort_value > $b_sort_value ) {
-                            return (1 * $flip);
-                        } else {
-                            return (-1 * $flip);
-                        }
+                        return (-1 * $flip);
                     }
                 }
             );
@@ -105,10 +100,14 @@ class SortByFieldExtension extends \Twig_Extension
     {
         if ( is_array($item) ) {
             return array_key_exists($field, $item);
-        } elseif ( is_object($item) ) {
-            return isset($item->$field) || property_exists($item, $field);
-        } else {
-            return false;
         }
+        if ( is_object($item) ) {
+            $getter = "get" . ucfirst($field);
+            return
+                isset($item->$field)
+                || property_exists($item, $field)
+                || method_exists($item, $getter);
+        }
+        return false;
     }
 }
